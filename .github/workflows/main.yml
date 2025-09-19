@@ -1,0 +1,39 @@
+name: Daily AI News Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate daily news post
+        run: python main.py
+        env:
+          EVENT_REGISTRY_API_KEY: ${{ secrets.EVENT_REGISTRY_API_KEY }}
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name "AI News Bot"
+          git config --global user.email "ai-news-bot@example.com"
+          git add _posts/
+          # Check if there are any changes to commit
+          if ! git diff --staged --quiet; then
+            git commit -m "Add daily AI news post for $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No new news post to commit."
+          fi

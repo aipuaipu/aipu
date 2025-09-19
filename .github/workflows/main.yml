@@ -24,6 +24,7 @@ jobs:
         run: python main.py
         env:
           EVENT_REGISTRY_API_KEY: ${{ secrets.EVENT_REGISTRY_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Commit and push if changed
         run: |

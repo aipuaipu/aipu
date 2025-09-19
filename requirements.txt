@@ -1,1 +1,2 @@
 eventregistry
+google-generativeai
